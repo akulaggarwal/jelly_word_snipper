@@ -5,6 +5,12 @@ const sampleSnip = 'What I highly recommended is creating hobbies together and e
 console.log(sampleSnip.length);
 console.log(Number.MAX_SAFE_INTEGER);
 
+const myArr = [4,5,6];
+
+for (let val of myArr){
+  console.log(val);
+}
+
 
 //weights:
 const maxLen = 200;
@@ -15,6 +21,7 @@ const maxInfoWeight = .8;
 const returnFullStr = false;
 
 //following value returned should be as low as possible
+/*
 function distance(current) {
   if (current < min || current > max) {
     return Number.MAX_SAFE_INTEGER
@@ -46,4 +53,4 @@ function makeSnip(inputStr) {
 
 }
 
-makeSnip(originalStr)
+makeSnip(originalStr)*/
