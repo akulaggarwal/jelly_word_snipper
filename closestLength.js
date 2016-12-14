@@ -7,22 +7,7 @@ console.log(sampleSnip.length);
 const idealLen = 100;
 const maxLen = 200;
 const minLen = 80;
-const punctuations = ['.', ';', ',', ')', '-', , ':'];
-
-// function closestPunctuation(punctArr) {
-//   punctArr.reduce( (min, cur) => {
-//     const diff = cur - idealLen;
-//     if (diff < min) {
-//       return diff
-//     } else {
-//       return min
-//     }
-//   }, 101)
-// }
-
-// function findPunctuation(punctuation, inputStr) {
-//   //REGEX: use regex or something to return array with all numerical locations with input punctuation
-// }
+const punctuations = ['.', '!', ';', '?', ',', ')', '-', , ':'];
 
 function findPunctuation(punctuation, inputStr) {
   const punctuationLocations = [];
@@ -65,12 +50,11 @@ function makeSnip(inputStr) {
     }
   }
 
-  //In case there's somehow no punctuation...
-  // if (/*no punc within first 200 chars*/) {
-    //return closest word to idealLen
-  // }
+  //In case there's somehow no punctuation at all! ...
+  if (!snipLocation) {
+    findPunctuation(' ', inputStr);
+  }
 
-  // const snipLocation = closestPunctuation(possibleSnipLocations);
   const snippet = inputStr.slice(0, snipLocation + 1);
   const remaining = inputStr.slice(snipLocation + 2);
   console.log({snippet, remaining});
