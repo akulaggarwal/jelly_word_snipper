@@ -7,28 +7,36 @@ const maxLen = 200;
 const minLen = 80;
 const punctuations = ['.', '!', ';', '?', ',', ')', '-', , ':'];
 
-function findPunctuation(punctuation, inputStr) {
-  const punctuationLocations = [];
+function findPunctuation(regex, inputStr) {
+  const rightStr = inputStr.slice(99, 200);
+  const leftStr = inputStr.slice(79, 99).split('').reverse().join('');
 
-  for (let i = 0; i < (maxLen - idealLen); i++) {
-    const offset = idealLen - 1;
-    const strForwards = inputStr[offset + i];
-    const strBackwards = inputStr[offset - i];
-
-    if (strForwards === punctuation) {
-      punctuationLocations.push(offset + i);
-    }
-    if (strBackwards === punctuation && i <= idealLen - minLen && i) {
-      punctuationLocations.push(offset - i);
-    }
-
-    if (punctuationLocations.length) {
-      break;
-    }
+  let startIndex = 0;
+  let rightIndeces = null;
+  if (rightStr.match(regex)) {
+    rightIndeces = rightStr.match(regex).map((punct) => {
+      startIndex = rightStr.indexOf(punct, startIndex ? startIndex + 1: 0);
+      return startIndex;
+    });
   }
 
-  if (punctuationLocations.length) {
-    return punctuationLocations[0];
+  startIndex = 0;
+  let leftIndeces = null;
+  if (leftStr.match(regex)) {
+    leftIndeces = leftStr.match(regex).map((punct) => {
+      startIndex = leftStr.indexOf(punct, startIndex ? startIndex + 1: 0);
+      return startIndex;
+    });
+  }
+
+  if (leftIndeces && rightIndeces) {
+    if (leftIndeces[0] <= rightIndeces[0]) {
+      return 100 - leftIndeces[0];
+    } else {
+      return rightIndeces[0] + 100;
+    }
+  } else if (leftIndeces || rightIndeces){
+    return leftIndeces ? 100 - leftIndeces[0] : rightIndeces[0] + 100;
   }
 
   return null;
@@ -42,23 +50,21 @@ function makeSnip(inputStr) {
 
   let snipLocation = null;
   for (let val of punctuations) {
-    snipLocation = findPunctuation(val, inputStr);
+    const regex = new RegExp(`[${val}]`);
+    snipLocation = findPunctuation(regex, inputStr);
 
     if (snipLocation) {
       break;
     }
   }
 
-  //Edge-case: In case there's somehow no punctuation at all! ...
-  snipLocation = snipLocation ? snipLocation: findPunctuation(' ', inputStr);
-
   //Edge-case: If somehow didn't match any expected inputs:
   if (!snipLocation) {
     return {full: inputStr}
   }
 
-  const snippet = inputStr.slice(0, snipLocation + 1);
-  const remaining = inputStr.slice(snipLocation + 2);
+  const snippet = inputStr.slice(0, snipLocation);
+  const remaining = inputStr.slice(snipLocation);
 
   return {snippet, remaining}
 }
